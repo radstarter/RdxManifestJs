@@ -10,7 +10,7 @@ const manifestString = new TransactionBuilder()
 console.log(manifestString);
 ```
 ## Limitations
-You still need to write the type manually for function calls, and no second layer utilitys have been implemented yet. Validation of Addresses, Decimals and Ids still needs to be done.
+You still need to write the type manually for function calls `'[Decimal("1.2")]'`, and no second layer utilities have been implemented yet. Validation of Addresses, Decimals and Ids still needs to be done.
 
 
 Contributions welcome.
