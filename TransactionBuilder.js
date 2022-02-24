@@ -4,7 +4,6 @@ class TransactionBuilder {
   }
 
   // First level worktop interaction
-
   takeFromWorktop(amount, resourceAddress, bucket) {
     if (
       this.validateDecimal(amount) &&
@@ -14,7 +13,7 @@ class TransactionBuilder {
         `TAKE_FROM_WORKTOP\n    Decimal("${amount}")\n    Address("${resourceAddress}")\n    Bucket("${bucket}");`
       );
     } else {
-      let len = this.transactions.length - 1;
+      let len = this.transactions.length;
       throw new Error(`Invalid params at takeFromWorktop(${len})`);
     }
 
@@ -27,7 +26,7 @@ class TransactionBuilder {
         `TAKE_ALL_FROM_WORKTOP\n    Address("${resourceAddress}")\n    Bucket("${bucket}");`
       );
     } else {
-      let len = this.transactions.length - 1;
+      let len = this.transactions.length;
       throw new Error(`Invalid params at takeAllFromWorktop(${len})`);
     }
 
@@ -46,7 +45,7 @@ class TransactionBuilder {
         `TAKE_NON_FUNGIBLES_FROM_WORKTOP\n    ${treeSet}\n    Address("${resourceAddress}")\n    Bucket("${bucket}");`
       );
     } else {
-      let len = this.transactions.length - 1;
+      let len = this.transactions.length;
       throw new Error(`Invalid params at takeNonFungiblesFromWorktop(${len})`);
     }
 
@@ -68,7 +67,7 @@ class TransactionBuilder {
         `ASSERT_WORKTOP_CONTAINS\n    Decimal("${amount}")\n    Address("${resourceAddress}");`
       );
     } else {
-      let len = this.transactions.length - 1;
+      let len = this.transactions.length;
       throw new Error(`Invalid params at assertWorktopContains(${len})`);
     }
 
@@ -99,16 +98,13 @@ class TransactionBuilder {
   // First level instance interaction
   // account ignored v0.1
   callFunction(packageAddress, blueprintName, functionName, args, account) {
-    // if account is present and the argument is a bucket or bucketRef, then we can automatically create the "withdraw" and the worktop interraction for it
-    // ^ @@Croq@@ maybe different method for this to keep this one pure (composability etc..)?
-
     if (this.validatePackage(packageAddress)) {
       let argString = args.join("\n    ");
       this.transactions.push(
         `CALL_FUNCTION\n    Address("${packageAddress}")\n    "${blueprintName}"\n    "${functionName}"\n    ${argString};`
       );
     } else {
-      let len = this.transactions.length - 1;
+      let len = this.transactions.length;
       throw new Error(`Invalid params at callFunction(${len})`);
     }
     return this;
@@ -121,7 +117,7 @@ class TransactionBuilder {
         `CALL_METHOD\n    Address("${componentAddress}")\n    "${methodName}"\n    ${argString};`
       );
     } else {
-      let len = this.transactions.length - 1;
+      let len = this.transactions.length;
       throw new Error(`Invalid params at callMethod(${len})`);
     }
     return this;
@@ -134,7 +130,7 @@ class TransactionBuilder {
         `CALL_METHOD_WITH_ALL_RESOURCES\n    Address("${componentAddress}")\n    "${methodName}"\n    ${argString};`
       );
     } else {
-      let len = this.transactions.length - 1;
+      let len = this.transactions.length;
       throw new Error(`Invalid params at callMethodWithAllResources(${len})`);
     }
 
