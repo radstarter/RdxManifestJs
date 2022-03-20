@@ -5,15 +5,13 @@
     <meta charset="utf-8" />
     <title>Temp Quick Test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="author" content="" />
-    <link rel="stylesheet" href="css/style.css" />
-    <script src="TransactionBuilder.js"></script>
   </head>
 
   <body>
     <div class="container"></div>
 
-    <script>
+    <script type="module">
+      import { TransactionBuilder, Decimal, Address, Bucket, BucketRef } from "./TransactionBuilder.js";
       const transactionBuilder = new TransactionBuilder()
         .takeFromWorktop(0.333, "1234", "cool_bucky")
         .takeAllFromWorktop("1234", "mad_bucky")
