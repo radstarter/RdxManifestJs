@@ -160,8 +160,9 @@ class TransactionBuilder {
   validateResource(resourceDef) {
     return true;
   }
-  validateDecimal(decimal) {
-    return true;
+  validateDecimal(dec) {
+    var regex = /Decimal\("(-)?(\d)+(\.(\d)+)?"\)/;
+    return String(dec).match(regex)!=null
   }
   validateIds() {
     return true;
