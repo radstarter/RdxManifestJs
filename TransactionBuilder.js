@@ -1,3 +1,29 @@
+
+export
+function BucketRef(id){
+  if(typeof id == "number")
+    return `BucketRef(${id}u32)`;
+  return `BucketRef("${id}")`;
+}
+
+export
+function Bucket(id){
+  if(typeof id == "number")
+    return `Bucket(${id}u32)`;
+  return `Bucket("${id}")`;
+}
+
+export
+function Decimal(v){
+  return `Decimal("${v}")`;
+}
+
+export
+function Address(v){
+  return `Address("${v}")`;
+}
+
+export
 class TransactionBuilder {
   constructor() {
     this.transactions = [];
@@ -10,7 +36,7 @@ class TransactionBuilder {
       this.validateResource(resourceAddress)
     ) {
       this.transactions.push(
-        `TAKE_FROM_WORKTOP\n    Decimal("${amount}")\n    Address("${resourceAddress}")\n    Bucket("${bucket}");`
+        `TAKE_FROM_WORKTOP\n    ${Decimal(amount)}\n    ${Address(resourceAddress)}\n    ${Bucket(bucket)};`
       );
     } else {
       let len = this.transactions.length;
@@ -23,7 +49,7 @@ class TransactionBuilder {
   takeAllFromWorktop(resourceAddress, bucket) {
     if (this.validateResource(resourceAddress)) {
       this.transactions.push(
-        `TAKE_ALL_FROM_WORKTOP\n    Address("${resourceAddress}")\n    Bucket("${bucket}");`
+        `TAKE_ALL_FROM_WORKTOP\n    ${Address(resourceAddress)}\n    ${Bucket(bucket)};`
       );
     } else {
       let len = this.transactions.length;
@@ -42,7 +68,7 @@ class TransactionBuilder {
       treeSet += ")";
 
       this.transactions.push(
-        `TAKE_NON_FUNGIBLES_FROM_WORKTOP\n    ${treeSet}\n    Address("${resourceAddress}")\n    Bucket("${bucket}");`
+        `TAKE_NON_FUNGIBLES_FROM_WORKTOP\n    ${treeSet}\n    ${Address(resourceAddress)}\n    ${Bucket(bucket)};`
       );
     } else {
       let len = this.transactions.length;
@@ -53,7 +79,7 @@ class TransactionBuilder {
   }
 
   returnToWorktop(bucket) {
-    this.transactions.push(`RETURN_TO_WORKTOP\n    Bucket("${bucket}");`);
+    this.transactions.push(`RETURN_TO_WORKTOP\n    ${Bucket(bucket)};`);
 
     return this;
   }
@@ -64,7 +90,7 @@ class TransactionBuilder {
       this.validateResource(resourceAddress)
     ) {
       this.transactions.push(
-        `ASSERT_WORKTOP_CONTAINS\n    Decimal("${amount}")\n    Address("${resourceAddress}");`
+        `ASSERT_WORKTOP_CONTAINS\n    ${Decimal(amount)}\n    ${Address(resourceAddress)};`
       );
     } else {
       let len = this.transactions.length;
@@ -77,20 +103,20 @@ class TransactionBuilder {
   // First level bucket interaction
   createBucketRef(bucket, bucketRef) {
     this.transactions.push(
-      `CREATE_BUCKET_REF\n    Bucket("${bucket}")\n    BucketRef("${bucketRef}");`
+      `CREATE_BUCKET_REF\n    ${Bucket(bucket)}\n    ${BucketRef(bucketRef)};`
     );
     return this;
   }
 
   cloneBucketRef(bucketRef, bucketRefNew) {
     this.transactions.push(
-      `CLONE_BUCKET_REF\n    BucketRef("${bucketRef}")\n    BucketRef("${bucketRefNew}");`
+      `CLONE_BUCKET_REF\n    ${BucketRef(bucketRef)}\n    ${BucketRef(bucketRefNew)};`
     );
     return this;
   }
 
   dropBucketRef(bucketRef) {
-    this.transactions.push(`DROP_BUCKET_REF\n    BucketRef("${bucketRef}");`);
+    this.transactions.push(`DROP_BUCKET_REF\n    ${BucketRef(bucketRef)};`);
 
     return this;
   }
@@ -101,7 +127,7 @@ class TransactionBuilder {
     if (this.validatePackage(packageAddress)) {
       let argString = args.join("\n    ");
       this.transactions.push(
-        `CALL_FUNCTION\n    Address("${packageAddress}")\n    "${blueprintName}"\n    "${functionName}"\n    ${argString};`
+        `CALL_FUNCTION\n    ${Address(packageAddress)}\n    "${blueprintName}"\n    "${functionName}"\n    ${argString};`
       );
     } else {
       let len = this.transactions.length;
@@ -114,7 +140,7 @@ class TransactionBuilder {
     if (this.validateComponent(componentAddress)) {
       let argString = args.join("\n    ");
       this.transactions.push(
-        `CALL_METHOD\n    Address("${componentAddress}")\n    "${methodName}"\n    ${argString};`
+        `CALL_METHOD\n    ${Address(componentAddress)}\n    "${methodName}"\n    ${argString};`
       );
     } else {
       let len = this.transactions.length;
@@ -125,9 +151,9 @@ class TransactionBuilder {
 
   callMethodWithAllResources(componentAddress, methodName, args, account) {
     if (this.validateComponent(componentAddress)) {
-      let argString = args.join("\n    ");
+      let argString = (args||[]).join("\n    ");
       this.transactions.push(
-        `CALL_METHOD_WITH_ALL_RESOURCES\n    Address("${componentAddress}")\n    "${methodName}"\n    ${argString};`
+        `CALL_METHOD_WITH_ALL_RESOURCES\n    ${Address(componentAddress)}\n    "${methodName}"\n    ${argString};`
       );
     } else {
       let len = this.transactions.length;
